@@ -51,12 +51,18 @@
             <div class="fw-bold">{{ comment.user.username }}</div>
             {{ comment.content }}
             {% if request.user == comment.user %}
-            <form action="{% url 'articles:comments_delete' article.pk comment.pk %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-warning my-3 float-right">댓글삭제</button>
-                <hr>
-            </form>
+            <div class="box-container">
+                <form action="{% url 'articles:comments_update' article.pk comment.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning my-3 float-right">댓글수정</button>
+                </form>
+                <form action="{% url 'articles:comments_delete' article.pk comment.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning my-3 float-right">댓글삭제</button>
 
+                </form>
+            </div>
+            <hr>
             {% else %}
             <hr>
             {% endif %}
