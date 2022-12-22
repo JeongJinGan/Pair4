@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-ue9@gb)71h6bgektjg5%g%tf6x%t9_1cv+*+1&6ey7+e2um*v&"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "Liverjjbean-env.eba-haxvmmag.ap-northeast-1.elasticbeanstalk.com"
+    "127.0.0.1",
+    "localhost",]
 
 
 # Application definition
@@ -34,6 +40,7 @@ INSTALLED_APPS = [
     "articles",
     "accounts",
     "landing",
+    "storages",
     "django_bootstrap5",
     "django_extensions",
     "imagekit",
@@ -81,12 +88,12 @@ WSGI_APPLICATION = "pjt.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
@@ -126,10 +133,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-
+STATIC_ROOT = "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 # Media files(user upload filed)
-MEDIA_ROOT = BASE_DIR / "images"
-MEDIA_URL = "/media/"
+# MEDIA_ROOT = BASE_DIR / "images"
+# MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -138,6 +148,64 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # User Model
 AUTH_USER_MODEL = "accounts.User"
+
+# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+# AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+# AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+# AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+
+# AWS_REGION = "ap-northeast-2"
+# AWS_S3_CUSTOM_DOMAIN = "%s.s3.%s.amazonaws.com" % (
+#     AWS_STORAGE_BUCKET_NAME,
+#     AWS_REGION,
+# )
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "liverjj_rds", # 코드 블럭 아래 이미지 참고하여 입력
+#         "USER": "postgres",
+#         "PASSWORD": "shjydp10601^^", # 데이터베이스 생성 시 작성한 패스워드
+#         "HOST": "liverjj.csk5a1ckkuye.ap-northeast-1.rds.amazonaws.com", # 코드 블럭 아래 이미지 참고하여 입력
+#         "PORT": "5432",
+#     }
+# }
+
+# DEBUG = os.getenv("DEBUG") == "True"
+DEBUG = False
+if DEBUG: 
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "images"
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+else:   
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+
+    AWS_REGION = "ap-northeast-2"
+    AWS_S3_CUSTOM_DOMAIN = "%s.s3.%s.amazonaws.com" % (
+        AWS_STORAGE_BUCKET_NAME,
+        AWS_REGION,
+    )
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DATABASE_NAME"), # .env 파일에 value 작성
+            "USER": "postgres",
+            "PASSWORD": os.getenv("DATABASE_PASSWORD"), # .env 파일에 value 작성
+            "HOST": os.getenv("DATABASE_HOST"), # .env 파일에 value 작성
+            "PORT": "5432",
+        }
+    }
 
 # Message Framework
 # https://docs.djangoproject.com/en/4.1/ref/contrib/messages/
